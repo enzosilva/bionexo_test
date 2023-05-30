@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Console\Commands\Instruction\Config\InstructionConfig;
 use App\Models\User;
 use App\Models\UserAmount;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -32,10 +33,10 @@ class Instruction1 extends Command
      */
     public function handle(): void
     {
-        $serverUrl = 'http://localhost:9515';
+        $serverUrl = InstructionConfig::getServerUrl();
 
         $driver = RemoteWebDriver::create($serverUrl, DesiredCapabilities::chrome());
-        $driver->get('https://testpages.herokuapp.com/styled/tag/table.html');
+        $driver->get(InstructionConfig::getInstruction1Url());
 
         $data = [];
 

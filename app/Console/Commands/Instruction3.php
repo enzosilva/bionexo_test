@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Console\Commands\Instruction\Config\InstructionConfig;
+use App\Console\Commands\Instruction\Data\File;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -13,10 +15,6 @@ use Facebook\WebDriver\WebDriverExpectedCondition;
 
 class Instruction3 extends Command
 {
-    const ORIGINAL_FILENAME = 'textfile.txt';
-
-    const NEW_FILENAME = 'Teste TKS.txt';
-
     /**
      * The name and signature of the console command.
      *
@@ -32,12 +30,20 @@ class Instruction3 extends Command
     protected $description = 'Download and rename file';
 
     /**
+     * @var File $file
+     */
+    public function __construct(private File $file)
+    {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle(): void
     {
-        $serverUrl = 'http://localhost:9515'; // <- add to .env variable
-        $downloadBasePath = '/home/enzosilva/Downloads'; // <- add to .env variable
+        $serverUrl = InstructionConfig::getServerUrl();
+        $downloadBasePath = $this->file->getDownloadBasePath();
 
         $options = new ChromeOptions();
         $prefs = array('download.default_directory' => $downloadBasePath);
@@ -47,7 +53,7 @@ class Instruction3 extends Command
         $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
 
         $driver = RemoteWebDriver::create($serverUrl, $capabilities);
-        $driver->get('https://testpages.herokuapp.com/styled/download/download.html');
+        $driver->get(InstructionConfig::getInstruction3Url());
 
         $directLinkDownloadButton = $driver->wait()->until(
             WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('direct-download'))
@@ -55,15 +61,17 @@ class Instruction3 extends Command
 
         $directLinkDownloadButton->click();
         do {
-            if (file_exists("$downloadBasePath/" . self::ORIGINAL_FILENAME)) {
+            $downloadedFilename = $this->file->getDownloadedFilename();
+            if (file_exists("$downloadBasePath/$downloadedFilename")) {
                 sleep(1);
 
+                $this->file->setDownloadedFilename('Teste TKS.txt');
                 rename(
-                    "$downloadBasePath/" . self::ORIGINAL_FILENAME,
-                    "$downloadBasePath/" . self::NEW_FILENAME
+                    "$downloadBasePath/$downloadedFilename",
+                    "$downloadBasePath/{$this->file->getDownloadedFilename()}"
                 );
             }
-        } while (!file_exists("$downloadBasePath/" . self::NEW_FILENAME));
+        } while (!file_exists("$downloadBasePath/{$this->file->getDownloadedFilename()}"));
 
         $driver->quit();
     }

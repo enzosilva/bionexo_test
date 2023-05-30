@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Console\Commands\Instruction\Config\InstructionConfig;
+use App\Console\Commands\Instruction\Data\File;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\LocalFileDetector;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -31,14 +33,22 @@ class Instruction2 extends Command
     protected $description = 'Driver form, fill it and submit by click';
 
     /**
+     * @var File $file
+     */
+    public function __construct(private File $file)
+    {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle(): void
     {
-        $serverUrl = 'http://localhost:9515';
+        $serverUrl = InstructionConfig::getServerUrl();
 
         $driver = RemoteWebDriver::create($serverUrl, DesiredCapabilities::chrome());
-        $driver->get('https://testpages.herokuapp.com/styled/basic-html-form-test.html');
+        $driver->get(InstructionConfig::getInstruction2Url());
 
         $driver->findElement(WebDriverBy::name('username'))
             ->sendKeys('test');
@@ -85,7 +95,12 @@ class Instruction2 extends Command
                 WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector('.explanation p'))
             );
 
-            echo $explanationElement->getText();
+            echo "{$explanationElement->getText()}\n";
+
+            $downloadBasePath = $this->file->getDownloadBasePath();
+            $this->file->setDownloadedFilename('success_instruction_2.png');
+
+            $driver->takeScreenshot("$downloadBasePath/{$this->file->getDownloadedFilename()}");
         } catch (\Exception $e) {
             throw new \Exception("Something unexpected happened: {$e->getMessage()}.");
         }

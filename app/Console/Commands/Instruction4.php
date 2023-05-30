@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Console\Commands\Instruction\Config\InstructionConfig;
+use App\Console\Commands\Instruction\Data\File;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\LocalFileDetector;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -12,8 +14,6 @@ use Facebook\WebDriver\WebDriverRadios;
 
 class Instruction4 extends Command
 {
-    const FILENAME_TO_UPLOAD = 'Teste TKS.txt';
-
     /**
      * The name and signature of the console command.
      *
@@ -29,24 +29,34 @@ class Instruction4 extends Command
     protected $description = 'Upload downloaded file in Instruction 3';
 
     /**
+     * @var File $file
+     */
+    public function __construct(private File $file)
+    {
+        parent::__construct();
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle(): void
     {
-        $serverUrl = 'http://localhost:9515'; // <- add to .env variable
-        $downloadBasePath = '/home/enzosilva/Downloads'; // <- add to .env variable
+        $serverUrl = InstructionConfig::getServerUrl();
+        $downloadBasePath = $this->file->getDownloadBasePath();
 
         $driver = RemoteWebDriver::create($serverUrl, DesiredCapabilities::chrome());
-        $driver->get('https://testpages.herokuapp.com/styled/file-upload-test.html');
+        $driver->get(InstructionConfig::getInstruction4Url());
+
+        $this->file->setDownloadedFilename('Teste TKS.txt');
 
         $driver->findElement(WebDriverBy::name('filename'))
             ->setFileDetector(new LocalFileDetector())
-            ->sendKeys("$downloadBasePath/" . self::FILENAME_TO_UPLOAD);
+            ->sendKeys("$downloadBasePath/{$this->file->getDownloadedFilename()}");
 
         $radiosElement = $driver->findElement(WebDriverBy::name('filetype'));
         $radios = new WebDriverRadios($radiosElement);
 
-        match (pathinfo(self::FILENAME_TO_UPLOAD, PATHINFO_EXTENSION)) {
+        match (pathinfo($this->file->getDownloadedFilename(), PATHINFO_EXTENSION)) {
             'jpg', 'jpeg', 'png', 'nimageext' => $radios->selectByValue('image'),
             'txt', 'pdf', 'csv', 'nfileext' => $radios->selectByValue('text')
         };
@@ -62,7 +72,12 @@ class Instruction4 extends Command
                 WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector('.explanation p'))
             );
 
-            echo $explanationElement->getText();
+            echo "{$explanationElement->getText()}\n";
+
+            $downloadBasePath = $this->file->getDownloadBasePath();
+            $this->file->setDownloadedFilename('success_instruction_4.png');
+
+            $driver->takeScreenshot("$downloadBasePath/{$this->file->getDownloadedFilename()}");
         } catch (\Exception $e) {
             throw new \Exception("Something unexpected happened: {$e->getMessage()}.");
         }
