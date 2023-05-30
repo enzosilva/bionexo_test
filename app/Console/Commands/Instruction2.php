@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -26,12 +28,12 @@ class Instruction2 extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Driver form, fill it and submit by click';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $serverUrl = 'http://localhost:9515';
 

@@ -30,7 +30,7 @@ class Instruction1 extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $serverUrl = 'http://localhost:9515';
 
@@ -43,7 +43,7 @@ class Instruction1 extends Command
         foreach ($rows as $i => $row) {
             $cells = $row->findElements(WebDriverBy::tagName('td'));
             foreach ($cells as $j => $cell) {
-                // Where even represents the cells that contain 'name' and odd 'amount'
+                // Where even represents 'name' and odd represents 'amount'
                 if (($j % 2) === 0) {
                     $username = (string) $cell->getText();
                     $data[$i]['name'] = $username;
