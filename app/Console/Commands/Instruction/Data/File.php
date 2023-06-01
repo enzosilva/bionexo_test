@@ -21,14 +21,14 @@ class File
         return $this;
     }
 
-    public function getDownloadedFilename(): string
+    public function getFilename(): string
     {
-        return config('beecare.downloaded_filename', 'textfile.txt');
+        return config('beecare.filename', 'textfile.txt');
     }
 
-    public function setDownloadedFilename(string $downloadedFilename): self
+    public function setFilename(string $filename): self
     {
-        config(['beecare.downloaded_filename' => $downloadedFilename]);
+        config(['beecare.filename' => $filename]);
 
         return $this;
     }

@@ -64,17 +64,18 @@ class Instruction3 extends Command
 
         $directLinkDownloadButton->click();
         do {
-            $downloadedFilename = $this->file->getDownloadedFilename();
+            $downloadedFilename = $this->file->getFilename();
             if (file_exists("$downloadBasePath/$downloadedFilename")) {
+                // Give a little time to browser process the file download
                 sleep(3);
 
-                $this->file->setDownloadedFilename('Teste TKS.txt');
+                $this->file->setFilename('Teste TKS.txt');
                 rename(
                     "$downloadBasePath/$downloadedFilename",
-                    "$downloadBasePath/{$this->file->getDownloadedFilename()}"
+                    "$downloadBasePath/{$this->file->getFilename()}"
                 );
             }
-        } while (!file_exists("$downloadBasePath/{$this->file->getDownloadedFilename()}"));
+        } while (!file_exists("$downloadBasePath/{$this->file->getFilename()}"));
 
         $driver->quit();
     }

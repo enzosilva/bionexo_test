@@ -59,10 +59,14 @@ class Instruction2 extends Command
             ->clear()
             ->sendKeys('Lorem ipsum dolor sit amet...');
 
-        $filepath = '/home/enzosilva/Documentos/test.txt';
+        $this->file->setDownloadBasePath('/home/enzosilva/Documentos');
+        $downloadBasePath = $this->file->getDownloadBasePath();
+
+        $this->file->setFilename('test.txt');
+
         $driver->findElement(WebDriverBy::name('filename'))
             ->setFileDetector(new LocalFileDetector())
-            ->sendKeys($filepath);
+            ->sendKeys("$downloadBasePath/{$this->file->getFilename()}");
 
         $checkboxesElement = $driver->findElement(WebDriverBy::name('checkboxes[]'));
         $checkboxes = new WebDriverCheckboxes($checkboxesElement);
@@ -95,11 +99,9 @@ class Instruction2 extends Command
             );
 
             echo "{$explanationElement->getText()}\n";
+            $this->file->setFilename('success_instruction_2.png');
 
-            $downloadBasePath = $this->file->getDownloadBasePath();
-            $this->file->setDownloadedFilename('success_instruction_2.png');
-
-            $driver->takeScreenshot("$downloadBasePath/{$this->file->getDownloadedFilename()}");
+            $driver->takeScreenshot("$downloadBasePath/{$this->file->getFilename()}");
         } catch (\Exception $e) {
             throw new \Exception("Something unexpected happened: {$e->getMessage()}.");
         }
