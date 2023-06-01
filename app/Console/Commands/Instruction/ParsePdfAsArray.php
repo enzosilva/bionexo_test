@@ -61,7 +61,7 @@ class ParsePdfAsArray
             });
         }
 
-        // Merge headers cells
+        // Merge header cells
         $result[0] = array_unique($result[0]);
 
         return $result;

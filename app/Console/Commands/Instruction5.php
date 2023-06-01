@@ -55,16 +55,20 @@ class Instruction5 extends Command
         $this->file->setDownloadedFilename('bionexo_test.pdf');
         $downloadedFilename = $this->file->getDownloadedFilename();
 
-        $pdf = $this->parser->parseFile("$downloadBasePath/$downloadedFilename");
+        try {
+            $pdf = $this->parser->parseFile("$downloadBasePath/$downloadedFilename");
 
-        $mainMap = PdfExampleMainPage::PDF_MAP;
-        $main = $this->parsePdfAsArray->execute($pdf, $mainMap, 0);
+            $mainMap = PdfExampleMainPage::PDF_MAP;
+            $main = $this->parsePdfAsArray->execute($pdf, $mainMap, 0);
 
-        ParseArrayAsCsv::execute($main, 'main');
+            ParseArrayAsCsv::execute($main, 'main');
 
-        $providersMap = PdfExampleProviderPage::PDF_MAP;
-        $providers = $this->parsePdfAsArray->execute($pdf, $providersMap, null, 2);
+            $providersMap = PdfExampleProviderPage::PDF_MAP;
+            $providers = $this->parsePdfAsArray->execute($pdf, $providersMap, null, 2);
 
-        ParseArrayAsCsv::execute($providers, 'providers');
+            ParseArrayAsCsv::execute($providers, 'providers');
+        } catch (\Exception $e) {
+            throw new \Exception("Cannot parse PDF file: {$e->getMessage()}");
+        }
     }
 }

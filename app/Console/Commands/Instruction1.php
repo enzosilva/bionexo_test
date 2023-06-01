@@ -9,8 +9,6 @@ use App\Console\Commands\Instruction\Config\InstructionConfig;
 use App\Console\Commands\Instruction\WebDriverFactory;
 use App\Models\User;
 use App\Models\UserAmount;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 
 class Instruction1 extends Command
@@ -67,7 +65,7 @@ class Instruction1 extends Command
                 $userAmount->save();
             });
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            throw new \Exception("Cannot save user and amount information: {$e->getMessage()}.");
         }
 
         $driver->quit();
