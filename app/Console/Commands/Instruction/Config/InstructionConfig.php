@@ -3,7 +3,7 @@
 namespace App\Console\Commands\Instruction\Config;
 
 /**
- * Instructions general configuration
+ * General instructions configuration
  */
 class InstructionConfig
 {
