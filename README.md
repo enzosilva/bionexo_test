@@ -17,12 +17,14 @@ Por ter sido desenvolvido em Laravel, o padrão de instalação da aplicação v
 
 Como pedido na Instrução de nº1, fora criadas duas tabelas para armazenar os dados `user` e `amount`. Para criar as tabelas basta rodar o seguinte comando:
 - `php artisan migrate`
+
 Lembrando que é necessário ter um banco de dados criado e corretamente configurado a partir do arquivo `.env` da aplicação.
 
 E por falar em `.env`, não se esqueça de apontar a porta em que o WebDriver irá rodar através da constante `WEBDRIVER_PORT` (**4444** é o padrão).
 
 Ainda sobre configurações iniciais, para algumas instruções se faz necessário apontar o diretório de download da máquina através do seguinte arquivo:
 - `app/Console/Commands/Instruction/Data/File.php`
+
 Para modificar o caminho do diretório, basta utilizar a função `setDownloadBasePath`. Ex.:
 ```
 <?php
