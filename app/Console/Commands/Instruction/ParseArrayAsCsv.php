@@ -15,11 +15,15 @@ class ParseArrayAsCsv
      */
     public static function execute(array $data, string $filename = 'pdf'): void
     {
-        $fp = fopen("$filename.csv", 'w');
-        foreach ($data as $fields) {
-            fputcsv($fp, $fields);
-        }
+        try {
+            $fp = fopen("$filename.csv", 'w');
+            foreach ($data as $fields) {
+                fputcsv($fp, $fields);
+            }
 
-        fclose($fp);
+            fclose($fp);
+        } catch (\Exception $e) {
+            throw new \Exception("Cannot create CSV file: {$e->getMessage()}");
+        }
     }
 }

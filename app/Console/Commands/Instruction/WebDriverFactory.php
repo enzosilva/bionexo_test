@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Commands\Instruction;
 
 use App\Console\Commands\Instruction\Config\InstructionConfig;
