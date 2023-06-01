@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Console\Commands\Instruction\Config\InstructionConfig;
+use App\Console\Commands\Instruction\WebDriverFactory;
 use App\Models\User;
 use App\Models\UserAmount;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -19,7 +20,7 @@ class Instruction1 extends Command
      *
      * @var string
      */
-    protected $signature = 'beecare:instruction1';
+    protected $signature = 'beecare:instruction1 {browser=chrome}';
 
     /**
      * The console command description.
@@ -33,10 +34,10 @@ class Instruction1 extends Command
      */
     public function handle(): void
     {
-        $serverUrl = InstructionConfig::getServerUrl();
-
-        $driver = RemoteWebDriver::create($serverUrl, DesiredCapabilities::chrome());
-        $driver->get(InstructionConfig::getInstruction1Url());
+        $driver = WebDriverFactory::execute(
+            InstructionConfig::getInstruction1Url(),
+            $this->argument('browser')
+        );
 
         $data = [];
 

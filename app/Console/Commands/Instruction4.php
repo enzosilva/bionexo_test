@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Console\Commands\Instruction\Config\InstructionConfig;
 use App\Console\Commands\Instruction\Data\File;
+use App\Console\Commands\Instruction\WebDriverFactory;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\LocalFileDetector;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -21,7 +22,7 @@ class Instruction4 extends Command
      *
      * @var string
      */
-    protected $signature = 'beecare:instruction4';
+    protected $signature = 'beecare:instruction4 {browser=chrome}';
 
     /**
      * The console command description.
@@ -43,12 +44,12 @@ class Instruction4 extends Command
      */
     public function handle(): void
     {
-        $serverUrl = InstructionConfig::getServerUrl();
+        $driver = WebDriverFactory::execute(
+            InstructionConfig::getInstruction4Url(),
+            $this->argument('browser')
+        );
+
         $downloadBasePath = $this->file->getDownloadBasePath();
-
-        $driver = RemoteWebDriver::create($serverUrl, DesiredCapabilities::chrome());
-        $driver->get(InstructionConfig::getInstruction4Url());
-
         $this->file->setDownloadedFilename('Teste TKS.txt');
 
         $driver->findElement(WebDriverBy::name('filename'))

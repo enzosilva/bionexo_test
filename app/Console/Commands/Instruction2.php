@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Console\Commands\Instruction\Config\InstructionConfig;
 use App\Console\Commands\Instruction\Data\File;
+use App\Console\Commands\Instruction\WebDriverFactory;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\LocalFileDetector;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -23,7 +24,7 @@ class Instruction2 extends Command
      *
      * @var string
      */
-    protected $signature = 'beecare:instruction2';
+    protected $signature = 'beecare:instruction2 {browser=chrome}';
 
     /**
      * The console command description.
@@ -45,10 +46,10 @@ class Instruction2 extends Command
      */
     public function handle(): void
     {
-        $serverUrl = InstructionConfig::getServerUrl();
-
-        $driver = RemoteWebDriver::create($serverUrl, DesiredCapabilities::chrome());
-        $driver->get(InstructionConfig::getInstruction2Url());
+        $driver = WebDriverFactory::execute(
+            InstructionConfig::getInstruction2Url(),
+            $this->argument('browser')
+        );
 
         $driver->findElement(WebDriverBy::name('username'))
             ->sendKeys('test');

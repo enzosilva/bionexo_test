@@ -9,7 +9,7 @@ class InstructionConfig
 {
     public const HEROKUAPP_URL = 'https://testpages.herokuapp.com/styled/';
 
-    public static function getServerUrl(): string
+    public static function getHost(): string
     {
         return env('APP_URL') . ':' . env('WEBDRIVER_PORT');
     }

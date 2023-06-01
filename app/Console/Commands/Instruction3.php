@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Console\Commands\Instruction\Config\InstructionConfig;
 use App\Console\Commands\Instruction\Data\File;
+use App\Console\Commands\Instruction\WebDriverFactory;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -20,7 +21,7 @@ class Instruction3 extends Command
      *
      * @var string
      */
-    protected $signature = 'beecare:instruction3';
+    protected $signature = 'beecare:instruction3 {browser=chrome}';
 
     /**
      * The console command description.
@@ -42,7 +43,6 @@ class Instruction3 extends Command
      */
     public function handle(): void
     {
-        $serverUrl = InstructionConfig::getServerUrl();
         $downloadBasePath = $this->file->getDownloadBasePath();
 
         $options = new ChromeOptions();
@@ -50,10 +50,14 @@ class Instruction3 extends Command
         $options->setExperimentalOption('prefs', $prefs);
 
         $capabilities = DesiredCapabilities::chrome();
-        $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
+        $browserOptions = $capabilities->setCapability(ChromeOptions::CAPABILITY, $options);
 
-        $driver = RemoteWebDriver::create($serverUrl, $capabilities);
-        $driver->get(InstructionConfig::getInstruction3Url());
+        // TODO: improve WebDriverFactory to receive browser options dynamicaly
+        $driver = WebDriverFactory::execute(
+            InstructionConfig::getInstruction3Url(),
+            $this->argument('browser'),
+            $browserOptions
+        );
 
         $directLinkDownloadButton = $driver->wait()->until(
             WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('direct-download'))
@@ -63,7 +67,7 @@ class Instruction3 extends Command
         do {
             $downloadedFilename = $this->file->getDownloadedFilename();
             if (file_exists("$downloadBasePath/$downloadedFilename")) {
-                sleep(1);
+                sleep(3);
 
                 $this->file->setDownloadedFilename('Teste TKS.txt');
                 rename(
