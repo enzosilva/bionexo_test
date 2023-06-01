@@ -1,66 +1,50 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Bionexo RPA Test
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Teste separado em instruções criadas a partir dos _Command Console_ do Laravel.
 
-## About Laravel
+As instruções foram as seguintes:
+- 1ª: Acessar a página https://testpages.herokuapp.com/styled/tag/table.html e capturar todas as informações exibidas na tabela e armazenar em um banco de dados (ex.: myqsl).
+- 2ª: Preencher o formulário através do link https://testpages.herokuapp.com/styled/basic-html-form-test.html e retornar se preenchimento foi ok ou não. ( pode inventar as informações a serem preenchidas).
+- 3ª: Baixar o arquivo através do link https://testpages.herokuapp.com/styled/download/download.html pelo botão “Direct Link Download” e salvar no seu disco local e renomear o arquivo para “Teste TKS”.
+- 4ª: Realizar o upload do arquivo baixado no item 3 através do link https://testpages.herokuapp.com/styled/file-upload-test.html.
+- 5ª: Realizar a leitura do .pdf em anexo - _disponibilizado por email_ - e armazenar em .xlsx ou .csv (fica a critério do candidato).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Sendo assim, por se tratar de automações, descartei a necessidade de criar rotas para devidas funcionalidades e optei por desenvolver comandos.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instruções iniciais
+Por ter sido desenvolvido em Laravel, o padrão de instalação da aplicação via Composer deve ser realizada ao baixar o projeto:
+- `composer install`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Como pedido na Instrução de nº1, fora criadas duas tabelas para armazenar os dados `user` e `amount`. Para criar as tabelas basta rodar o seguinte comando:
+- `php artisan migrate`
+Lembrando que é necessário ter um banco de dados criado e corretamente configurado a partir do arquivo `.env` da aplicação.
 
-## Learning Laravel
+E por falar em `.env`, não se esqueça de apontar a porta em que o WebDriver irá rodar através da constante `WEBDRIVER_PORT` (**4444** é o padrão).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Ainda sobre configurações iniciais, para algumas instruções se faz necessário apontar o diretório de download da máquina através do seguinte arquivo:
+- `app/Console/Commands/Instruction/Data/File.php`
+Para modificar o caminho do diretório, basta utilizar a função `setDownloadBasePath`. Ex.:
+```
+<?php
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+/**
+ * @var File $file
+ */
+public function __construct(private File $file)
+{
+    $file->setDownloadBasePath('/path/to/directory');
+}
+```
+### Lista dos comandos
+Foi desenvolvido um comando para cada instrução:
+- `php artisan beecare:instruction1`
+- `php artisan beecare:instruction2`
+- `php artisan beecare:instruction3`
+- `php artisan beecare:instruction4`
+- `php artisan beecare:instruction5`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+É possível passar como argumento para os comandos qual navegador será manipulado pelo WebDriver (**Chrome** é o padrão). Ex.:
+- `php artisan beecare:instruction1 firefox`
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Agradecimento
+Valeu, Bionexo, pela oportunidade de participar desse processo! Foi massa aprender um pouco sobre automações.
