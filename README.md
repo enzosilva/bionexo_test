@@ -46,5 +46,9 @@ Foi desenvolvido um comando para cada instrução:
 É possível passar como argumento para os comandos qual navegador será manipulado pelo WebDriver (**Chrome** é o padrão). Ex.:
 - `php artisan beecare:instruction1 firefox`
 
+### Bibliotecas externas ao Laravel utilizadas
+- PHP WebDriver: https://github.com/php-webdriver/php-webdriver
+- PDF Parser (Smalot): https://github.com/smalot/pdfparser
+
 #### Agradecimento
 Valeu, Bionexo, pela oportunidade de participar desse processo! Foi massa aprender um pouco sobre automações.
