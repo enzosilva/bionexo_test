@@ -48,16 +48,16 @@ class Instruction4 extends Command
         );
 
         $downloadBasePath = $this->file->getDownloadBasePath();
-        $this->file->setDownloadedFilename('Teste TKS.txt');
+        $this->file->setFilename('Teste TKS.txt');
 
         $driver->findElement(WebDriverBy::name('filename'))
             ->setFileDetector(new LocalFileDetector())
-            ->sendKeys("$downloadBasePath/{$this->file->getDownloadedFilename()}");
+            ->sendKeys("$downloadBasePath/{$this->file->getFilename()}");
 
         $radiosElement = $driver->findElement(WebDriverBy::name('filetype'));
         $radios = new WebDriverRadios($radiosElement);
 
-        match (pathinfo($this->file->getDownloadedFilename(), PATHINFO_EXTENSION)) {
+        match (pathinfo($this->file->getFilename(), PATHINFO_EXTENSION)) {
             'jpg', 'jpeg', 'png', 'nimageext' => $radios->selectByValue('image'),
             'txt', 'pdf', 'csv', 'nfileext' => $radios->selectByValue('text')
         };
@@ -75,10 +75,8 @@ class Instruction4 extends Command
 
             echo "{$explanationElement->getText()}\n";
 
-            $downloadBasePath = $this->file->getDownloadBasePath();
-            $this->file->setDownloadedFilename('success_instruction_4.png');
-
-            $driver->takeScreenshot("$downloadBasePath/{$this->file->getDownloadedFilename()}");
+            $this->file->setFilename('success_instruction_4.png');
+            $driver->takeScreenshot("$downloadBasePath/{$this->file->getFilename()}");
         } catch (\Exception $e) {
             throw new \Exception("Something unexpected happened: {$e->getMessage()}.");
         }
