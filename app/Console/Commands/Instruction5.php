@@ -52,8 +52,8 @@ class Instruction5 extends Command
     {
         $downloadBasePath = $this->file->getDownloadBasePath();
 
-        $this->file->setDownloadedFilename('bionexo_test.pdf');
-        $downloadedFilename = $this->file->getDownloadedFilename();
+        $this->file->setFilename('bionexo_test.pdf');
+        $downloadedFilename = $this->file->getFilename();
 
         try {
             $pdf = $this->parser->parseFile("$downloadBasePath/$downloadedFilename");
